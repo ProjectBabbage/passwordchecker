@@ -1,0 +1,16 @@
+{
+  "name": "middle",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@frenchpastries/assemble": "^0.1.1",
+    "@frenchpastries/millefeuille": "^0.1.6",
+    "dotenv": "^6.2.0",
+    "node-fetch": "^2.6.1"
+  },
+  "scripts": {
+    "dev": "nodemon src/main.js",
+    "start": "node src/main.js"
+  }
+}
