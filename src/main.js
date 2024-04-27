@@ -1,25 +1,35 @@
 require('dotenv').config()
 const MilleFeuille = require('@frenchpastries/millefeuille')
-const { response } = require('@frenchpastries/millefeuille/response')
-const fetch = require('node-fetch')
+const { get, ...Assemble } = require('@frenchpastries/assemble')
 
-const helloResponse = response('Hello French Pastries!')
+const levels = process.env.LEVEL.split('/').map((q) => q.split(';'))
+console.log(levels)
 
 const handler = (request) => {
-  console.log(JSON.stringify(request.headers))
+  console.log(request.url)
+  const url = request.url.split('/')
+  const lvl = url[1]
+  const mdp = url[2]
+  const f = levels.find((p) => p[0] === lvl && p[1] === mdp)
   return {
-    statusCode: 200,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      ...{
-        method: request.method,
-      },
-      url: request.url,
-      headers: request.headers,
-    }),
+    statusCode: f ? 200 : 403,
+    body: f ? 'good job' : 'try again',
   }
 }
 
-const server = MilleFeuille.create(handler)
+const handlerModel = (request) => {
+  const f = levels.map((a) => a[0])
+  console.log(f)
+  return {
+    statusCode: 200,
+    body: JSON.stringify(f),
+  }
+}
+
+const allRoutes = Assemble.routes([
+  get('/:lvl/:pass', handler),
+  get('/modele', handlerModel),
+])
+
+console.log(process.env.PORT)
+MilleFeuille.create(allRoutes)
